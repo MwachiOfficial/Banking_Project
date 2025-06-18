@@ -3,9 +3,46 @@
 #include <string>
 using namespace std;
 
+
+int welcome_user(){
+    cout<<"Welcome User\n";
+    int option;
+    cout << "1. Withdraw cash\n";
+    cout << "2. Check balance\n";
+    cout << "3. Reset password\n";
+    cout << "Enter option to proceed: ";
+    cin >> option;
+    return 0;
+
+}
+//My main user function
 int normal_user() {
+    string user_username;
+    string user_password;
+
+    cout << "Welcome to the Normal User login page\n";
+
+    cout << "Enter username:\t";
+    cin >> user_username;
+
+    cout << "Enter password:\t";
+    cin >> user_password;
+
+    ofstream fout("user.txt", ios::app);
+
+    if (!fout) {
+        cout << "Error opening file for writing.\n";
+        return 1;
+    }
+
+    fout << user_username << "\n" << user_password << "\n";
+    fout.close();
+
+    welcome_user();
+
     return 0;
 }
+
 
 int welcome_admin() {
     int option;
@@ -16,6 +53,7 @@ int welcome_admin() {
     cin >> option;
     return 0;
 }
+//My main admin function
 int admin() {
     string admin_username;
     string admin_password;
@@ -29,7 +67,7 @@ int admin() {
     cout << "Enter password:\t";
     cin >> admin_password;
 
-    ofstream fout("admin.txt");
+    ofstream fout("admin.txt",ios::app);
     if (!fout) {
         cout << "Error opening file for writing.\n";
         return 1;
@@ -42,7 +80,7 @@ int admin() {
     return 0;
 }
 
-int main() {
+int main() { 
     int option;
 
     cout << "Welcome to xxx E_CASH SERVICES ********\n";
