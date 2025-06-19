@@ -2,9 +2,15 @@
 #include <fstream>
 #include <string>
 using namespace std;
+int withdraw_cash();
+int check_balance();
+int reset_password(string *pass_ptr);
+int welcome_user();
+int normal_user();
+int admin();
+int welcome_admin();
 
-
-int welcome_user(){
+int welcome_user(string *pass_ptr){
     cout<<"Welcome User\n";
     int option;
     cout << "1. Withdraw cash\n";
@@ -12,12 +18,53 @@ int welcome_user(){
     cout << "3. Reset password\n";
     cout << "Enter option to proceed: ";
     cin >> option;
+
+    if (option == 1) {
+        withdraw_cash();
+    } else if (option == 2) {
+        check_balance();
+    } else if (option == 3) {
+        reset_password(pass_ptr);
+    } else {
+        cout << "Invalid option selected.\n";
+    }
+
     return 0;
 
 }
+
+int withdraw_cash(){
+    return 0;
+}
+int check_balance(){
+    return 0;
+}
+
+int reset_password(string *pass_ptr){
+    string new_password;
+
+    cout << "Enter new password: ";
+    cin >> new_password;
+    *pass_ptr = new_password;
+
+    ofstream fout("user.txt", ios::app);
+     if (!fout) {
+        cout << "Error opening file for writing.\n";
+        return 1;
+    }
+
+    fout << new_password << endl;
+    cout << "Updated password: " << *pass_ptr << endl;
+    fout.close();
+
+    welcome_user(pass_ptr);
+    return 0;
+}
+
 //My main user function
 int normal_user() {
     string user_username;
+    string *pass_ptr;
     string user_password;
 
     cout << "Welcome to the Normal User login page\n";
@@ -36,9 +83,13 @@ int normal_user() {
     }
 
     fout << user_username << "\n" << user_password << "\n";
+
+    pass_ptr = &user_password;
+
+
     fout.close();
 
-    welcome_user();
+    welcome_user(pass_ptr);
 
     return 0;
 }
