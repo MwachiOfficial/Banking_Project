@@ -3,6 +3,8 @@
 #include <string>
 using namespace std;
 
+bool validateAdmin(const string& username, const string& password);
+bool validateUser(const string& username, const string& password); 
 
 int welcome_user(){
     cout<<"Welcome User\n";
