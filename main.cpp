@@ -80,7 +80,7 @@ int admin() {
     return 0;
 }
 
-int main() { 
+int main() {
     int option;
 
     cout << "Welcome to xxx E_CASH SERVICES ********\n";
@@ -97,7 +97,6 @@ int main() {
     } else {
         cout << "Invalid option selected.\n";
     }
-    
+
     return 0;
 }
-
