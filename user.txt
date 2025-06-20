@@ -13,8 +13,13 @@ Tentacles
 Judas
 Iscariot
 Arimathea
+<<<<<<< HEAD
 Matthew
 Hi
 Remmy
 1234
 12345
+=======
+ina
+njau
+>>>>>>> refs/remotes/origin/main
