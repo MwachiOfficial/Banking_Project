@@ -38,6 +38,12 @@ int welcome_user(string *pass_ptr){
 }
 
 int withdraw_cash(){
+    double cash_withdrawal;
+
+    cout << "1.Amount to withdraw ?";
+    cin >> cash_withdrawal;
+    cout << cash_withdrawal;
+
     return 0;
 }
 int check_balance(){
