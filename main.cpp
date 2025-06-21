@@ -98,20 +98,38 @@ void welcome_admin(const string& username) {
 
 bool validateAdmin(const string& username, const string& password) {
     ifstream fin("admin.txt");
+    if (!fin.is_open()) {
+        cout << "Error: Admin database not found.\n";
+        return false;
+    }
+    
     string u, p;
     while (fin >> u >> p) {
-        if (u == username && p == password) return true;
+        if (u == username && p == password) {
+            fin.close();
+            return true;
+        }
     }
+    fin.close();
     return false;
 }
 
 bool validateUser(const string& username, const string& password) {
     ifstream fin("usersDB.txt");
+    if (!fin.is_open()) {
+        cout << "Error: User database not found.\n";
+        return false;
+    }
+    
     string u, p;
     double b;
     while (fin >> u >> p >> b) {
-        if (u == username && p == password) return true;
+        if (u == username && p == password) {
+            fin.close();
+            return true;
+        }
     }
+    fin.close();
     return false;
 }
 
