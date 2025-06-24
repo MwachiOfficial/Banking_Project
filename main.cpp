@@ -39,11 +39,23 @@ int welcome_user(string *pass_ptr){
 
 int withdraw_cash(){
     double cash_withdrawal;
+    double amount = 10000.00;
+    int balance ;
 
-    cout << "1.Amount to withdraw ?";
+    cout << " Current balance :"<< amount << endl;
+    cout << "enter an amount to withdraw: ";
     cin >> cash_withdrawal;
-    cout << cash_withdrawal;
 
+    if(cash_withdrawal <= 0)
+       cout << "incorrect withdrawal amount.Please enter again.\n";
+    else if (cash_withdrawal > amount)
+       cout << "insufficient funds. Please try again.\n";
+    else 
+       balance = amount - cash_withdrawal;
+       cout << "withdrwal successful.New balance:" << balance << endl;
+    
+       
+       cout << endl;
     return 0;
 }
 int check_balance(){
