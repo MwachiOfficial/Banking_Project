@@ -59,6 +59,9 @@ int withdraw_cash(){
     return 0;
 }
 int check_balance(){
+    double amount = 10000.00;
+    cout << "Your current balance is: " << amount << endl;
+    cout << "Thank you for using our service.\n";
     return 0;
 }
 
