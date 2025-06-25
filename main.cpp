@@ -39,14 +39,29 @@ int welcome_user(string *pass_ptr){
 
 int withdraw_cash(){
     double cash_withdrawal;
+    double amount = 10000.00;
+    int balance ;
 
-    cout << "1.Amount to withdraw ?";
+    cout << " Current balance :"<< amount << endl;
+    cout << "enter an amount to withdraw: ";
     cin >> cash_withdrawal;
-    cout << cash_withdrawal;
 
+    if(cash_withdrawal <= 0)
+       cout << "incorrect withdrawal amount.Please enter again.\n";
+    else if (cash_withdrawal > amount)
+       cout << "insufficient funds. Please try again.\n";
+    else 
+       balance = amount - cash_withdrawal;
+       cout << "withdrwal successful.New balance:" << balance << endl;
+    
+       
+       cout << endl;
     return 0;
 }
 int check_balance(){
+    double amount = 10000.00;
+    cout << "Your current balance is: " << amount << endl;
+    cout << "Thank you for using our service.\n";
     return 0;
 }
 
@@ -130,6 +145,36 @@ int welcome_admin(string *adminPtr) {
 }
 
 int deposit_cash(){
+    double deposit_amount;
+    double balance;
+    cout << "Welcome to the deposit page.\n";
+    
+    ifstream fin("user_balance.txt");
+    if (!(fin >> balance)) {
+        cout << "No balance record found. Setting default to Ksh 10,000.\n";
+        balance = 10000.00;
+    }
+    fin.close();
+
+    
+    cout << "Enter amount to deposit for the client: ";
+    cin >> deposit_amount;
+
+    if (deposit_amount <= 0) {
+        cout << "Invalid deposit amount. Please enter a positive number.\n";
+        return -1;
+    }
+
+    balance += deposit_amount;
+    ofstream fout("user_balance.txt");
+    if (!fout) {
+        cout << "Error saving balance.\n";
+        return 1;
+    }
+    fout << balance;
+    fout.close();
+
+    cout << "Deposit successful! New client balance: Ksh " << balance << endl;
     return 0;
 }
 
