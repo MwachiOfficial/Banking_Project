@@ -3,7 +3,7 @@
 #include <string>
 using namespace std;
 int withdraw_cash(string *client_pass_ptr, string client_username);
-int check_balance();
+int check_balance(string *client_pass_ptr, string client_username);
 int reset_password(string *client_pass_ptr, string client_username);
 int welcome_user();
 int normal_user();
@@ -25,7 +25,7 @@ int welcome_user(string *client_pass_ptr, string client_username){
     if (option == 1) {
         withdraw_cash(client_pass_ptr, client_username);
     } else if (option == 2) {
-        check_balance();
+        check_balance(client_pass_ptr, client_username);
     } else if (option == 3) {
         reset_password(client_pass_ptr, client_username);
     } else {
@@ -56,10 +56,11 @@ int withdraw_cash(string *client_pass_ptr, string client_username){
     welcome_user(client_pass_ptr, client_username);
     return 0;
 }
-int check_balance(){
+int check_balance(string *client_pass_ptr, string client_username){
     double amount = 10000.00;
     cout << "Your current balance is: " << amount << endl;
     cout << "Thank you for using our service.\n";
+    welcome_user(client_pass_ptr, client_username);
     return 0;
 }
 
@@ -131,11 +132,10 @@ int normal_user() {
             string *client_pass_ptr = &client_password;
             welcome_user(client_pass_ptr, client_username);
             login_success = true;
-        } else{
-            cout << "Invalid username\n";
-            main();
         }
-
+    }
+    if(!login_success){
+        cout << "Invalid Username\n";
     }
 
     fin.close();
@@ -289,18 +289,40 @@ int admin() {
     cout << "Enter password:\t";
     cin >> admin_password;
 
-    ofstream fout("admin.txt",ios::app);
-    if (!fout) {
-        cout << "Error opening file for writing.\n";
+    ifstream fin("admin.txt");
+    if(!fin){
+        cout << "Error opening admin.txt\n";
         return 1;
     }
 
-    fout << admin_username << " " << admin_password << "\n";
+    string username, password;
+    bool append = false;
 
+    while(fin >> username >> password){
+        if(username == admin_username && password == admin_password){
+            append = true;
+            break;
+        }
+    }
+
+    fin.close();
     adminPtr = &admin_password;
-    fout.close();
 
-    welcome_admin(adminPtr, admin_username);
+    if(append){
+        welcome_admin(adminPtr, admin_username);
+    }else{
+        ofstream fout("admin.txt", ios::app);
+        if(!fout){
+            cout << "Error opening admin.txt\n";
+            return 1;
+        }
+        fout << admin_username << " " << admin_password <<endl;
+        fout.close();
+
+        cout << "New admin registered successfully\n";
+        welcome_admin(adminPtr, admin_username);
+    }
+
     return 0;
 }
 
