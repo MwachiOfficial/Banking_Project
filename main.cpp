@@ -4,7 +4,7 @@
 using namespace std;
 int withdraw_cash();
 int check_balance();
-int reset_password(string *pass_ptr);
+int reset_password(string *pass_ptr, string user_username);
 int welcome_user();
 int normal_user();
 int admin();
@@ -12,9 +12,9 @@ int welcome_admin();
 int deposit_cash();
 int withdraw_balance();
 int check_client_balance();
-int reset_client_password(string *adminPtr);
+int reset_client_password(string *adminPtr, string admin_username);
 
-int welcome_user(string *pass_ptr){
+int welcome_user(string *pass_ptr, string user_username){
     cout<<"Welcome User\n";
     int option;
     cout << "1. Withdraw cash\n";
@@ -28,7 +28,7 @@ int welcome_user(string *pass_ptr){
     } else if (option == 2) {
         check_balance();
     } else if (option == 3) {
-        reset_password(pass_ptr);
+        reset_password(pass_ptr, user_username);
     } else {
         cout << "Invalid option selected.\n";
     }
@@ -50,11 +50,11 @@ int withdraw_cash(){
        cout << "incorrect withdrawal amount.Please enter again.\n";
     else if (cash_withdrawal > amount)
        cout << "insufficient funds. Please try again.\n";
-    else 
+    else
        balance = amount - cash_withdrawal;
        cout << "withdrwal successful.New balance:" << balance << endl;
-    
-       
+
+
        cout << endl;
     return 0;
 }
@@ -65,24 +65,46 @@ int check_balance(){
     return 0;
 }
 
-int reset_password(string *pass_ptr){
+int reset_password(string *pass_ptr, string user_username){
     string new_password;
 
     cout << "Enter new password: ";
     cin >> new_password;
-    *pass_ptr = new_password;
 
-    ofstream fout("user.txt", ios::app);
-     if (!fout) {
-        cout << "Error opening file for writing.\n";
+    ifstream fin("user.txt");
+    ofstream fout("temp.txt");
+
+    if(!fin || !fout){
+        cout << "Error opening files \n";
         return 1;
     }
 
-    fout << new_password << endl;
+    string username, password;
+    bool updated = false;
+    while(fin >> username >> password){
+        if(username == user_username){
+            fout << username << " " << new_password <<endl;
+            *pass_ptr = new_password;
+            updated = true;
+        } else{
+            fout << username << " " << password <<endl;
+        }
+    }
+
     cout << "Updated password: " << *pass_ptr << endl;
+    fin.close();
     fout.close();
 
-    welcome_user(pass_ptr);
+    remove("user.txt");
+    rename("temp.txt", "user.txt");
+
+      if (updated)
+        cout << "Password updated successfully\n";
+      else
+        cout << "Username not found\n";
+
+
+    welcome_user(pass_ptr, user_username);
     return 0;
 }
 
@@ -107,20 +129,20 @@ int normal_user() {
         return 1;
     }
 
-    fout << user_username << "\n" << user_password << "\n";
+    fout << user_username << " " << user_password << "\n";
 
     pass_ptr = &user_password;
 
 
     fout.close();
 
-    welcome_user(pass_ptr);
+    welcome_user(pass_ptr, user_username);
 
     return 0;
 }
 
 
-int welcome_admin(string *adminPtr) {
+int welcome_admin(string *adminPtr, string admin_username) {
     int option;
     cout << "1. Deposit money for client\n";
     cout << "2. Withdraw money for client\n";
@@ -136,7 +158,7 @@ int welcome_admin(string *adminPtr) {
     } else if (option == 3) {
         check_client_balance();
     } else if(option == 4){
-        reset_client_password(adminPtr);
+        reset_client_password(adminPtr, admin_username);
     }
     else {
         cout << "Invalid option selected.\n";
@@ -148,7 +170,7 @@ int deposit_cash(){
     double deposit_amount;
     double balance;
     cout << "Welcome to the deposit page.\n";
-    
+
     ifstream fin("user_balance.txt");
     if (!(fin >> balance)) {
         cout << "No balance record found. Setting default to Ksh 10,000.\n";
@@ -156,7 +178,7 @@ int deposit_cash(){
     }
     fin.close();
 
-    
+
     cout << "Enter amount to deposit for the client: ";
     cin >> deposit_amount;
 
@@ -186,23 +208,47 @@ int check_client_balance(){
     return 0;
 }
 
-int reset_client_password(string *adminPtr){
+int reset_client_password(string *adminPtr, string admin_username){
     string new_client_pass;
 
     cout << "Enter new password: ";
     cin >> new_client_pass;
 
-    ofstream fout("admin.txt", ios::app);
-    if(!fout){
-        cout << "Error opening file for writing. \n";
+    ifstream fin("admin.txt");
+    ofstream fout("temporary.txt");
+
+    if(!fin || !fout){
+        cout << "Error loading pages \n";
         return 1;
     }
-    fout << new_client_pass <<endl;
-    cout << "Updated Password: " << new_client_pass << endl;
-    *adminPtr = new_client_pass;
+
+    string username, password;
+    bool updated = false;
+
+    while(fin >> username >> password){
+        if(username == admin_username){
+            fout << username << " " << new_client_pass <<endl;
+            *adminPtr = new_client_pass;
+            updated = true;
+        } else {
+            fout << username << " " << password <<endl;
+        }
+    }
+
+
+    cout << "Updated Password: " << *adminPtr << endl;
+    fin.close();
     fout.close();
 
-    welcome_admin(adminPtr);
+    remove("admin.txt");
+    rename("temporary.txt", "admin.txt");
+
+    if(updated)
+      cout << "Password updated successfully \n";
+    else
+      cout << "Username not found \n";
+
+    welcome_admin(adminPtr, admin_username);
 
     return 0;
 }
@@ -227,12 +273,12 @@ int admin() {
         return 1;
     }
 
-    fout << admin_username << "\n" << admin_password << "\n";
+    fout << admin_username << " " << admin_password << "\n";
 
     adminPtr = &admin_password;
     fout.close();
 
-    welcome_admin(adminPtr);
+    welcome_admin(adminPtr, admin_username);
     return 0;
 }
 

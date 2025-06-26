@@ -1,26 +1,17 @@
-Benn
-345
-jeff
-5678
-Matthew
-Hiiii
-Hi
-yo
-Spongebob
-Squarepants
-Squidward
-Tentacles
-Judas
-Iscariot
-Arimathea
-ina
-njau
->>>>>>> refs/remotes/origin/main
-njua
-9876
-njau
-098
-9877
-987
-njua
-9876
+Benn 345
+jeff 5678
+Matthew Hiiii
+Hi yo
+Spongebob Squarepants
+Squidward Tentacles
+Judas Iscariot
+Arimathea ina
+njau >>>>>>>
+refs/remotes/origin/main njua
+9876 njau
+098 9877
+987 njua
+9876 Michelle
+Michy Michelle
+Michy MatthewMainoo
+Fear Mag
