@@ -2,7 +2,7 @@
 #include <fstream>
 #include <string>
 using namespace std;
-int withdraw_cash();
+int withdraw_cash(string *pass_ptr, string user_username);
 int check_balance();
 int reset_password(string *pass_ptr, string user_username);
 int welcome_user();
@@ -10,9 +10,8 @@ int normal_user();
 int admin();
 int welcome_admin();
 int deposit_cash();
-int withdraw_balance();
-int check_client_balance();
-int reset_client_password(string *adminPtr, string admin_username);
+int register_client(string *adminPtr, string admin_username);
+int reset_admin_password(string *adminPtr, string admin_username);
 
 int welcome_user(string *pass_ptr, string user_username){
     cout<<"Welcome User\n";
@@ -24,7 +23,7 @@ int welcome_user(string *pass_ptr, string user_username){
     cin >> option;
 
     if (option == 1) {
-        withdraw_cash();
+        withdraw_cash(pass_ptr, user_username);
     } else if (option == 2) {
         check_balance();
     } else if (option == 3) {
@@ -37,7 +36,7 @@ int welcome_user(string *pass_ptr, string user_username){
 
 }
 
-int withdraw_cash(){
+int withdraw_cash(string *pass_ptr, string user_username){
     double cash_withdrawal;
     double amount = 10000.00;
     int balance ;
@@ -46,16 +45,15 @@ int withdraw_cash(){
     cout << "enter an amount to withdraw: ";
     cin >> cash_withdrawal;
 
-    if(cash_withdrawal <= 0)
-       cout << "incorrect withdrawal amount.Please enter again.\n";
-    else if (cash_withdrawal > amount)
-       cout << "insufficient funds. Please try again.\n";
-    else
-       balance = amount - cash_withdrawal;
-       cout << "withdrwal successful.New balance:" << balance << endl;
+        if(cash_withdrawal <= 0)
+        cout << "incorrect withdrawal amount.Please enter again.\n";
+        else if (cash_withdrawal > amount)
+        cout << "insufficient funds. Please try again.\n";
+        else
+        balance = amount - cash_withdrawal;
+        cout << "withdrwal successful.New balance:" << balance << endl;
 
-
-       cout << endl;
+    welcome_user(pass_ptr, user_username);
     return 0;
 }
 int check_balance(){
@@ -108,7 +106,7 @@ int reset_password(string *pass_ptr, string user_username){
     return 0;
 }
 
-//My main user function
+//My main user function, MAKE THIS THE LOGIN FUNCTION
 int normal_user() {
     string user_username;
     string *pass_ptr;
@@ -145,20 +143,17 @@ int normal_user() {
 int welcome_admin(string *adminPtr, string admin_username) {
     int option;
     cout << "1. Deposit money for client\n";
-    cout << "2. Withdraw money for client\n";
-    cout << "3. Check client balance\n";
-    cout << "4. Reset Password\n";
+    cout << "2. Register a new client\n";
+    cout << "3. Reset Password\n";
     cout << "Enter your choice: ";
     cin >> option;
 
     if (option == 1) {
         deposit_cash();
     } else if (option == 2) {
-        withdraw_balance();
-    } else if (option == 3) {
-        check_client_balance();
-    } else if(option == 4){
-        reset_client_password(adminPtr, admin_username);
+        register_client(adminPtr, admin_username);
+    } else if(option == 3){
+        reset_admin_password(adminPtr, admin_username);
     }
     else {
         cout << "Invalid option selected.\n";
@@ -200,19 +195,43 @@ int deposit_cash(){
     return 0;
 }
 
-int withdraw_balance(){
+int register_client(string *adminPtr, string admin_username){
+    string client_username;
+    string *client_pass_ptr;
+    string client_password;
+
+    cout << "Register new client\n";
+
+    cout << "Enter username:\t";
+    cin >> client_username;
+
+    cout << "Enter password:\t";
+    cin >> client_password;
+
+    ofstream fout("user.txt", ios::app);
+
+    if (!fout) {
+        cout << "Error opening file for writing.\n";
+        return 1;
+    }
+
+    fout << client_username << " " << client_password << "\n";
+
+    client_pass_ptr = &client_password;
+
+
+    fout.close();
+
+    welcome_admin(adminPtr, admin_username);
+
     return 0;
 }
 
-int check_client_balance(){
-    return 0;
-}
-
-int reset_client_password(string *adminPtr, string admin_username){
-    string new_client_pass;
+int reset_admin_password(string *adminPtr, string admin_username){
+    string new_admin_pass;
 
     cout << "Enter new password: ";
-    cin >> new_client_pass;
+    cin >> new_admin_pass;
 
     ifstream fin("admin.txt");
     ofstream fout("temporary.txt");
@@ -227,8 +246,8 @@ int reset_client_password(string *adminPtr, string admin_username){
 
     while(fin >> username >> password){
         if(username == admin_username){
-            fout << username << " " << new_client_pass <<endl;
-            *adminPtr = new_client_pass;
+            fout << username << " " << new_admin_pass <<endl;
+            *adminPtr = new_admin_pass;
             updated = true;
         } else {
             fout << username << " " << password <<endl;
