@@ -2,9 +2,9 @@
 #include <fstream>
 #include <string>
 using namespace std;
-int withdraw_cash(string *pass_ptr, string user_username);
+int withdraw_cash(string *client_pass_ptr, string client_username);
 int check_balance();
-int reset_password(string *pass_ptr, string user_username);
+int reset_password(string *client_pass_ptr, string client_username);
 int welcome_user();
 int normal_user();
 int admin();
@@ -13,7 +13,7 @@ int deposit_cash();
 int register_client(string *adminPtr, string admin_username);
 int reset_admin_password(string *adminPtr, string admin_username);
 
-int welcome_user(string *pass_ptr, string user_username){
+int welcome_user(string *client_pass_ptr, string client_username){
     cout<<"Welcome User\n";
     int option;
     cout << "1. Withdraw cash\n";
@@ -23,11 +23,11 @@ int welcome_user(string *pass_ptr, string user_username){
     cin >> option;
 
     if (option == 1) {
-        withdraw_cash(pass_ptr, user_username);
+        withdraw_cash(client_pass_ptr, client_username);
     } else if (option == 2) {
         check_balance();
     } else if (option == 3) {
-        reset_password(pass_ptr, user_username);
+        reset_password(client_pass_ptr, client_username);
     } else {
         cout << "Invalid option selected.\n";
     }
@@ -36,7 +36,7 @@ int welcome_user(string *pass_ptr, string user_username){
 
 }
 
-int withdraw_cash(string *pass_ptr, string user_username){
+int withdraw_cash(string *client_pass_ptr, string client_username){
     double cash_withdrawal;
     double amount = 10000.00;
     int balance ;
@@ -53,7 +53,7 @@ int withdraw_cash(string *pass_ptr, string user_username){
         balance = amount - cash_withdrawal;
         cout << "withdrwal successful.New balance:" << balance << endl;
 
-    welcome_user(pass_ptr, user_username);
+    welcome_user(client_pass_ptr, client_username);
     return 0;
 }
 int check_balance(){
@@ -63,7 +63,7 @@ int check_balance(){
     return 0;
 }
 
-int reset_password(string *pass_ptr, string user_username){
+int reset_password(string *client_pass_ptr, string client_username){
     string new_password;
 
     cout << "Enter new password: ";
@@ -80,16 +80,16 @@ int reset_password(string *pass_ptr, string user_username){
     string username, password;
     bool updated = false;
     while(fin >> username >> password){
-        if(username == user_username){
+        if(username == client_username){
             fout << username << " " << new_password <<endl;
-            *pass_ptr = new_password;
+            *client_pass_ptr = new_password;
             updated = true;
         } else{
             fout << username << " " << password <<endl;
         }
     }
 
-    cout << "Updated password: " << *pass_ptr << endl;
+    cout << "Updated password: " << *client_pass_ptr << endl;
     fin.close();
     fout.close();
 
@@ -102,40 +102,43 @@ int reset_password(string *pass_ptr, string user_username){
         cout << "Username not found\n";
 
 
-    welcome_user(pass_ptr, user_username);
+    welcome_user(client_pass_ptr, client_username);
     return 0;
 }
 
-//My main user function, MAKE THIS THE LOGIN FUNCTION
 int normal_user() {
-    string user_username;
-    string *pass_ptr;
-    string user_password;
+    string client_username, client_password;
 
     cout << "Welcome to the Normal User login page\n";
 
     cout << "Enter username:\t";
-    cin >> user_username;
+    cin >> client_username;
 
     cout << "Enter password:\t";
-    cin >> user_password;
+    cin >> client_password;
 
-    ofstream fout("user.txt", ios::app);
+    ifstream fin("user.txt");
 
-    if (!fout) {
-        cout << "Error opening file for writing.\n";
+    string username, password;
+
+    if (!fin) {
+        cout << "Error opening file for reading.\n";
         return 1;
     }
+     bool login_success = false;
+    while(fin >> username >> password ){
+        if(username == client_username && password == client_password){
+            string *client_pass_ptr = &client_password;
+            welcome_user(client_pass_ptr, client_username);
+            login_success = true;
+        } else{
+            cout << "Invalid username\n";
+            main();
+        }
 
-    fout << user_username << " " << user_password << "\n";
+    }
 
-    pass_ptr = &user_password;
-
-
-    fout.close();
-
-    welcome_user(pass_ptr, user_username);
-
+    fin.close();
     return 0;
 }
 
