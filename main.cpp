@@ -112,33 +112,40 @@ int normal_user() {
 
     cout << "Welcome to the Normal User login page\n";
 
-    cout << "Enter username:\t";
-    cin >> client_username;
+    bool login_success = false;
 
-    cout << "Enter password:\t";
-    cin >> client_password;
+    while (!login_success) {
+        cout << "Enter username:\t";
+        cin >> client_username;
 
-    ifstream fin("user.txt");
+        cout << "Enter password:\t";
+        cin >> client_password;
 
-    string username, password;
+        ifstream fin("user.txt");
 
-    if (!fin) {
-        cout << "Error opening file for reading.\n";
-        return 1;
-    }
-     bool login_success = false;
-    while(fin >> username >> password ){
-        if(username == client_username && password == client_password){
-            string *client_pass_ptr = &client_password;
-            welcome_user(client_pass_ptr, client_username);
-            login_success = true;
+        if (!fin) {
+            cout << "Error opening file for reading.\n";
+            return 1;
+        }
+
+        string username, password;
+
+        while (fin >> username >> password) {
+            if (username == client_username && password == client_password) {
+                string *client_pass_ptr = &client_password;
+                welcome_user(client_pass_ptr, client_username);
+                login_success = true;
+                break;
+            }
+        }
+
+        fin.close();
+
+        if (!login_success) {
+            cout << "Invalid username or password. Please try again.\n\n";
         }
     }
-    if(!login_success){
-        cout << "Invalid Username\n";
-    }
 
-    fin.close();
     return 0;
 }
 
